@@ -4,9 +4,9 @@ set(PROJECT_NAME cmake_example)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_OSX_ARCHITECTURES "arm64")
 
-# mac에서 Cocoa 와 iokit을 사용할 수 있게 해줘야 glfw를 사용할 수 있음
+# mac에서 라이브러리 사용을 위한 컴파일 옵션
 if (APPLE)
-    set(CMAKE_CXX_FLAGS "-framework Cocoa -framework IOKit")
+    set(CMAKE_CXX_FLAGS "-framework Cocoa -framework IOKit -framework OpenGL")
 endif()
 
 set(WINDOW_NAME "Hello, OpenGL!")
