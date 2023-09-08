@@ -3,6 +3,29 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+void onKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  SPDLOG_INFO("key: {}, scancode: {}, action: {}, mods: {}{}{}",
+    key, scancode,
+    action == GLFW_PRESS ? "pressed" :
+    action == GLFW_RELEASE ? "released":
+    action == GLFW_REPEAT ? "repeat" : "unknown",
+    mods & GLFW_MOD_CONTROL ? "C" : "-",
+    mods & GLFW_MOD_SHIFT ? "S" : "-",
+    mods & GLFW_MOD_ALT ? "A" : "-");
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+      glfwSetWindowShouldClose(window, true);
+    }
+}
+void onFrameBufferSizeChange(GLFWwindow* window, int width, int height) {
+  SPDLOG_INFO("frame buffer size changed: ({} x {})", width, height);
+  glViewport(0, 0, width, height);
+}
+
+void render() {
+  glClearColor(0.1f, 0.2f, 0.3f, 0.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
 int main(int argc, char** argv) {
   SPDLOG_INFO("Start Program");
 
@@ -40,9 +63,15 @@ int main(int argc, char** argv) {
   auto glVersion = glGetString(GL_VERSION);
   SPDLOG_INFO("OpenGL context version: {}", (char*)glVersion);
 
+  onFrameBufferSizeChange(window, WINDOW_WIDTH, WINDOW_HEIGHT);
+  glfwSetFramebufferSizeCallback(window, onFrameBufferSizeChange);
+  glfwSetKeyCallback(window, onKeyEvent);
+
   SPDLOG_INFO("Start main loop");
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
+    render();
+    glfwSwapBuffers(window);
   }
 
   glfwTerminate();
